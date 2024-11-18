@@ -4,12 +4,12 @@ session_start();
 require_once 'config.php';
 require_once 'active_users.php';
 
-// Si l'utilisateur est connecté, mettre à jour son activité
+// Si utilisateur connecté, mettre à jour activité
 if (isset($_SESSION['user_id'])) {
     $stmt = $pdo->prepare("SELECT id FROM users WHERE id = ?");
     $stmt->execute([$_SESSION['user_id']]);
     if (!$stmt->fetch()) {
-        // L'utilisateur n'existe plus dans la base de données
+        // L'utilisateur existe plus dans BDD
         session_destroy();
         header("Location: index.php");
         exit;
@@ -260,21 +260,21 @@ if (isset($_SESSION['user_id'])) {
     <?php
     // Gestion de la connexion
     if (!isset($_SESSION['user_id']) && isset($_POST['username'])) {
-        // D'abord, vérifions si l'utilisateur existe déjà
+        // D'abord, verif  si utilisateur existe déjà
         $stmt = $pdo->prepare("SELECT id, color FROM users WHERE username = ?");
         $stmt->execute([$_POST['username']]);
         $user = $stmt->fetch();
         
         if ($user) {
-            // Si l'utilisateur existe, on met à jour sa couleur
+            // Si utilisateur existe, met à jour couleur
             $stmt = $pdo->prepare("UPDATE users SET color = ? WHERE id = ?");
             $stmt->execute([$_POST['color'], $user['id']]);
         } else {
-            // Si l'utilisateur n'existe pas, on le crée
+            // Si utilisateur existe pas, crée
             $stmt = $pdo->prepare("INSERT INTO users (username, color) VALUES (?, ?)");
             $stmt->execute([$_POST['username'], $_POST['color']]);
             
-            // On récupère l'ID du nouvel utilisateur
+            // récupère ID nouvel utilisateur
             $user = array(
                 'id' => $pdo->lastInsertId(),
                 'color' => $_POST['color']
@@ -287,7 +287,7 @@ if (isset($_SESSION['user_id'])) {
         $_SESSION['color'] = $_POST['color'];
     }
 
-    // Affichage du formulaire de connexion si non connecté
+    // Affichage formulaire de connexion si non connecté
     if (!isset($_SESSION['user_id'])) {
     ?>
         <div class="login-container">
