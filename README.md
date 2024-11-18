@@ -82,5 +82,5 @@ MIT License - Voir le fichier [LICENSE](LICENSE) pour plus de détails
 ---
 
 <p align="center">
-Fait avec ❤️ pour la communauté JDR
+Fait avec ❤️ pour MOI lol
 </p>
