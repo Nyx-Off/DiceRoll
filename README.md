@@ -1,86 +1,115 @@
 # 🎲 DiceRoll
-
-> Un lanceur de dés collaboratif en temps réel pour vos parties de jeu de rôle !
+> An online collaborative dice roller with real-time updates and Discord integration
 
 [![Discord](https://img.shields.io/badge/Discord-Integration-7289DA)](https://discord.com)
 [![PHP](https://img.shields.io/badge/PHP-7.4+-777BB4)](https://php.net)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
+## 📖 About
+DiceRoll is a real-time collaborative dice rolling platform designed for tabletop RPG sessions. It features an intuitive interface that displays dice rolls, player activity, and game statistics in real-time, with optional Discord integration for sharing crucial moments with your gaming community.
 
-## 📖 À propos
+## ✨ Features
 
-DiceRoll est né de la passion pour les jeux de rôle et de la nécessité de maintenir cette connexion si particulière entre joueurs, même à distance. Dans un monde où le jeu en ligne devient de plus en plus présent, nous avions besoin d'un outil qui ne se contente pas simplement de lancer des dés, mais qui recrée cette ambiance si spéciale de la table de jeu.
+### Core Features
+- Multiple dice types (D4, D6, D8, D10, D12, D20, D100)
+- Custom dice creation
+- Multiple dice rolls simultaneously
+- Bonus/malus system
+- Real-time roll history
+- Active player tracking
+- Discord integration for sharing rolls
 
-Cette application web permet aux joueurs de se retrouver dans un espace virtuel où chaque lancer de dés devient un moment partagé. L'interface intuitive et élégante affiche en temps réel les résultats de chaque participant, leurs bonus et malus, le tout dans une atmosphère personnalisée grâce aux couleurs distinctives de chaque joueur.
+### User Features
+- Customizable usernames
+- Personal color selection
+- Persistent user settings
+- Real-time online status
+- Discord notifications toggle
 
-L'intégration avec Discord pousse l'expérience encore plus loin, permettant de partager instantanément les moments cruciaux de vos parties avec votre communauté. Que ce soit pour ce jet de sauvegarde décisif ou ce coup critique tant attendu, vos lancers peuvent être automatiquement partagés sur votre serveur Discord.
+### Interface
+- Clean, modern UI
+- Dark theme
+- Mobile-responsive design
+- Real-time updates
+- Session persistence
 
-## ✨ Fonctionnalités
+## 🚀 Installation
 
-- 🎯 Large choix de dés (D4, D6, D8, D10, D12, D20, D100)
-- 🛠 Création de dés personnalisés
-- 📜 Historique des lancers en temps réel
-- 👥 Suivi des joueurs connectés
-- ➕ Système de bonus/malus
-- 🤖 Intégration Discord
-- 🎨 Personnalisation des couleurs par joueur
-- 📱 Design responsive
+### Prerequisites
+- PHP 7.4+
+- MySQL/MariaDB
+- Web server (Apache/Nginx)
+- Discord webhook URL (optional)
 
-## 🚀 Pour commencer
+### Database Setup
+```sql
+-- Create required tables
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    color VARCHAR(7) NOT NULL
+);
 
-### Prérequis
+CREATE TABLE rolls (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    dice_type INT NOT NULL,
+    dice_count INT DEFAULT 1,
+    bonus INT DEFAULT 0,
+    result INT NOT NULL,
+    base_roll INT NOT NULL,
+    individual_rolls JSON,
+    roll_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-- Serveur web avec PHP 7.4 ou supérieur
-- Base de données MySQL
-- URL webhook Discord (optionnel)
-
-### Installation
-
-1. Clonez le dépôt
-```bash
-git clone https://github.com/votre-username/DiceRoll.git
+CREATE TABLE user_sessions (
+    user_id INT NOT NULL,
+    last_activity TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 ```
 
-2. Créez une base de données MySQL
-
-3. Configurez vos accès dans `config.php`
+### Configuration
+1. Clone the repository
+2. Copy `config.php.example` to `config.php`
+3. Update database credentials in `config.php`:
 ```php
-define('DB_HOST', 'votre-host');
-define('DB_NAME', 'votre-db');
-define('DB_USER', 'votre-user');
-define('DB_PASS', 'votre-password');
+define('DB_HOST', 'your-host');
+define('DB_NAME', 'your-db');
+define('DB_USER', 'your-user');
+define('DB_PASS', 'your-password');
+```
+4. Configure Discord webhook in `discord_webhook.php` (optional)
+
+## 💻 Technical Details
+
+### Architecture
+- **Backend**: PHP 7.4+ with PDO
+- **Database**: MySQL/MariaDB
+- **Frontend**: Vanilla JavaScript
+- **Styling**: Modern CSS3 with CSS Variables
+- **Real-time**: AJAX polling
+
+### File Structure
+```
+├── active_users.php    # User session management
+├── config.php         # Database configuration
+├── discord_webhook.php # Discord integration
+├── get_history.php    # Roll history retrieval
+├── get_online_users.php # Active users list
+├── index.php         # Main application
+├── roll.php         # Dice rolling logic
+└── settings.php    # User settings management
 ```
 
-4. Configurez votre webhook Discord dans `discord_webhook.php` (optionnel)
+## 🔒 Security Considerations
+- SQL injection protection via PDO prepared statements
+- Session-based authentication
+- XSS prevention through output escaping
+- Rate limiting on roll submissions
+- Secure database credentials handling
 
-## 💻 Stack technique
-
-- **Backend**: PHP 7.4+
-- **Base de données**: MySQL
-- **Frontend**: JavaScript vanilla
-- **Styles**: CSS3 moderne
-- **Interface**: HTML5
-
-## 🔒 Sécurité
-
-N'oubliez pas de :
-- Protéger votre fichier `config.php`
-- Modifier les identifiants par défaut
-- Configurer correctement les permissions de votre serveur
-
-## 🤝 Contribution
-
-Les contributions sont les bienvenues ! N'hésitez pas à :
-- 🐛 Signaler des bugs
-- 💡 Proposer des améliorations
-- 🔧 Soumettre des pull requests
-
-## 📝 Licence
-
-MIT License - Voir le fichier [LICENSE](LICENSE) pour plus de détails
+## 📝 License
+MIT License - See [LICENSE](LICENSE) for details
 
 ---
-
-<p align="center">
-Fait avec ❤️ pour MOI lol
-</p>
+Made with passion for the TTRPG community 🎭
