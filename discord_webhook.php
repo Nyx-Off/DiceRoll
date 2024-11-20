@@ -1,7 +1,7 @@
 <?php
 // discord_webhook.php
 function sendDiscordWebhook($username, $userColor, $diceType, $diceCount, $rolls, $bonus, $finalResult) {
-    $webhookUrl = "https://discord.com/api/webhooks/1308126937847300268/ilSVXY5AoCQAV_hZoL1FvZhorBof2T32Nbbji4k06jHyO3aKF-GLQvXXnTWYqhVBqzQW";
+    $webhookUrl = "";
     
     $rollsText = implode(', ', $rolls);
     $bonusText = $bonus > 0 ? "+$bonus" : ($bonus < 0 ? $bonus : '');
