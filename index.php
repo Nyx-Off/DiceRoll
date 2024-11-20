@@ -4,12 +4,12 @@ session_start();
 require_once 'config.php';
 require_once 'active_users.php';
 
-// Si utilisateur connecté, mettre à jour activité
+// Si l'utilisateur est connecté, mettre à jour son activité
 if (isset($_SESSION['user_id'])) {
     $stmt = $pdo->prepare("SELECT id FROM users WHERE id = ?");
     $stmt->execute([$_SESSION['user_id']]);
     if (!$stmt->fetch()) {
-        // L'utilisateur existe plus dans BDD
+        // L'utilisateur n'existe plus dans la base de données
         session_destroy();
         header("Location: index.php");
         exit;
@@ -260,21 +260,21 @@ if (isset($_SESSION['user_id'])) {
     <?php
     // Gestion de la connexion
     if (!isset($_SESSION['user_id']) && isset($_POST['username'])) {
-        // D'abord, verif  si utilisateur existe déjà
+        // D'abord, vérifions si l'utilisateur existe déjà
         $stmt = $pdo->prepare("SELECT id, color FROM users WHERE username = ?");
         $stmt->execute([$_POST['username']]);
         $user = $stmt->fetch();
         
         if ($user) {
-            // Si utilisateur existe, met à jour couleur
+            // Si l'utilisateur existe, on met à jour sa couleur
             $stmt = $pdo->prepare("UPDATE users SET color = ? WHERE id = ?");
             $stmt->execute([$_POST['color'], $user['id']]);
         } else {
-            // Si utilisateur existe pas, crée
+            // Si l'utilisateur n'existe pas, on le crée
             $stmt = $pdo->prepare("INSERT INTO users (username, color) VALUES (?, ?)");
             $stmt->execute([$_POST['username'], $_POST['color']]);
             
-            // récupère ID nouvel utilisateur
+            // On récupère l'ID du nouvel utilisateur
             $user = array(
                 'id' => $pdo->lastInsertId(),
                 'color' => $_POST['color']
@@ -287,7 +287,7 @@ if (isset($_SESSION['user_id'])) {
         $_SESSION['color'] = $_POST['color'];
     }
 
-    // Affichage formulaire de connexion si non connecté
+    // Affichage du formulaire de connexion si non connecté
     if (!isset($_SESSION['user_id'])) {
     ?>
         <div class="login-container">
@@ -318,8 +318,12 @@ if (isset($_SESSION['user_id'])) {
                         <input type="checkbox" id="send-to-discord" checked>
                         <span>Envoyer sur Discord</span>
                     </label>    
+                    <span>Nombre de Dés</span>
+                    <input type="number" id="dice-count" class="bonus-input" value="1" min="1" placeholder="Nombre de dés">
+                    <span>          Bonus / Malus</span>
+                    <input type="number" id="bonus" class="bonus-input" value="0" placeholder="Bonus/Malus">
                     <div class="controls">
-                        <input type="number" id="bonus" class="bonus-input" value="0" placeholder="Bonus/Malus">
+                        
                         <button id="roll-button" class="roll-button" disabled>Lancer le dé</button>
                     </div>
                 </div>
@@ -375,18 +379,19 @@ if (isset($_SESSION['user_id'])) {
             document.getElementById('roll-button').addEventListener('click', () => {
                 if (selectedDiceType) {
                     const bonus = parseInt(document.getElementById('bonus').value) || 0;
-                    saveDiceRoll(selectedDiceType, bonus);
+                    const count = parseInt(document.getElementById('dice-count').value) || 1;
+                    saveDiceRoll(selectedDiceType, count, bonus);
                 }
             });
 
-            function saveDiceRoll(type, bonus) {
+            function saveDiceRoll(type, count, bonus) {
                 const sendToDiscord = document.getElementById('send-to-discord').checked;
                 fetch('roll.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
-                    body: `type=${type}&bonus=${bonus}&sendToDiscord=${sendToDiscord}`
+                    body: `type=${type}&count=${count}&bonus=${bonus}&sendToDiscord=${sendToDiscord}`
                 })
                 .then(response => response.json())
                 .then(data => {

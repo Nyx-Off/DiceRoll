@@ -1,10 +1,11 @@
 <?php
 // discord_webhook.php
-function sendDiscordWebhook($username, $userColor, $diceType, $baseRoll, $bonus, $finalResult) {
-    $webhookUrl = "DISCORD HOOK LINK HERE !";
+function sendDiscordWebhook($username, $userColor, $diceType, $diceCount, $rolls, $bonus, $finalResult) {
+    $webhookUrl = "https://discord.com/api/webhooks/1308126937847300268/ilSVXY5AoCQAV_hZoL1FvZhorBof2T32Nbbji4k06jHyO3aKF-GLQvXXnTWYqhVBqzQW";
     
-    $bonusText = $bonus > 0 ? "+$bonus" : $bonus;
-    $calculation = $bonus != 0 ? "$baseRoll $bonusText = $finalResult" : "$baseRoll";
+    $rollsText = implode(', ', $rolls);
+    $bonusText = $bonus > 0 ? "+$bonus" : ($bonus < 0 ? $bonus : '');
+    $calculation = $bonus != 0 ? "[$rollsText] $bonusText = $finalResult" : "[$rollsText] = $finalResult";
     
     $embed = [
         "title" => "Nouveau lancer de dé",
@@ -17,7 +18,7 @@ function sendDiscordWebhook($username, $userColor, $diceType, $baseRoll, $bonus,
             ],
             [
                 "name" => "Dé",
-                "value" => "D$diceType",
+                "value" => "${diceCount}D$diceType",
                 "inline" => true
             ],
             [
